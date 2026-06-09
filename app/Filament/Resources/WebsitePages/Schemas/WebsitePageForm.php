@@ -1,28 +1,37 @@
 <?php
 
-namespace App\Filament\Resources\Websites\Schemas;
+namespace App\Filament\Resources\WebsitePages\Schemas;
 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
-class WebsiteForm
+class WebsitePageForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
+                Select::make('website_id')
+                    ->label('Website')
+                    ->relationship('website', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
+
                 TextInput::make('name')
                     ->label('Naam')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->placeholder('Contact'),
 
                 TextInput::make('url')
-                    ->label('Website URL')
+                    ->label('URL')
                     ->url()
                     ->required()
                     ->maxLength(255)
-                    ->placeholder('https://jouwklant.be'),
+                    ->placeholder('https://quickstream.be/contact'),
 
                 Toggle::make('is_active')
                     ->label('Actief')

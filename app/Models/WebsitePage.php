@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Website extends Model
+class WebsitePage extends Model
 {
     protected $fillable = [
+        'website_id',
         'name',
         'url',
         'is_active',
@@ -20,6 +22,11 @@ class Website extends Model
         'is_scanning' => 'boolean',
     ];
 
+    public function website(): BelongsTo
+    {
+        return $this->belongsTo(Website::class);
+    }
+
     public function audits(): HasMany
     {
         return $this->hasMany(Audit::class);
@@ -27,11 +34,6 @@ class Website extends Model
 
     public function lastAudit(): HasOne
     {
-        return $this->hasOne(Audit::class)->ofMany('scanned_at', 'max');
-    }
-
-    public function pages(): HasMany
-    {
-        return $this->hasMany(WebsitePage::class);
+        return $this->hasOne(Audit::class)->latestOfMany('scanned_at');
     }
 }

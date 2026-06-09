@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Websites;
 
+use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\Websites\Pages\CreateWebsite;
+use App\Filament\Resources\Websites\Pages\WebsiteHistory;
 use App\Filament\Resources\Websites\Pages\EditWebsite;
 use App\Filament\Resources\Websites\Pages\ListWebsites;
 use App\Filament\Resources\Websites\Schemas\WebsiteForm;
@@ -20,7 +22,7 @@ class WebsiteResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'url';
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
     {
@@ -45,6 +47,14 @@ class WebsiteResource extends Resource
             'index' => ListWebsites::route('/'),
             'create' => CreateWebsite::route('/create'),
             'edit' => EditWebsite::route('/{record}/edit'),
+            'history' => WebsiteHistory::route('/{record}/history'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withCount(['audits', 'pages'])
+            ->with('lastAudit');
     }
 }
