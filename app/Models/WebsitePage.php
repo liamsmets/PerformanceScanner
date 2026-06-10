@@ -36,4 +36,15 @@ class WebsitePage extends Model
     {
         return $this->hasOne(Audit::class)->latestOfMany('scanned_at');
     }
+
+    public function scanLogs(): HasMany
+    {
+        return $this->hasMany(ScanLog::class);
+    }
+
+    public function latestScanLog(): HasOne
+    {
+        return $this->hasOne(ScanLog::class)
+            ->latestOfMany('started_at');
+    }
 }

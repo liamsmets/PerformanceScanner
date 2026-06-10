@@ -25,7 +25,7 @@ class WebsitesTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->poll('5s')
+            ->poll('10s')
             ->columns([
                 TextColumn::make('name')
                     ->label('Naam')
@@ -62,11 +62,32 @@ class WebsitesTable
                             return 'Scan bezig...';
                         }
 
+                        if ($record->latestMainScanLog?->status === 'failed') {
+                            return 'Scan mislukt';
+                        }
+
                         return $record->lastAudit?->scanned_at?->format('d/m/Y H:i')
                             ?? 'Nog niet gescand';
                     })
                     ->badge()
-                    ->color(fn (Website $record): string => $record->is_scanning ? 'warning' : 'gray'),
+                    ->color(function (Website $record): string {
+                        if ($record->is_scanning) {
+                            return 'warning';
+                        }
+
+                        if ($record->latestMainScanLog?->status === 'failed') {
+                            return 'danger';
+                        }
+
+                        return 'gray';
+                    })
+                    ->tooltip(function (Website $record): ?string {
+                        if ($record->latestMainScanLog?->status === 'failed') {
+                            return 'De scan voor ' . $record->latestMainScanLog->target_url . ' is gefaald. Raadpleeg de scan logs voor meer info.';
+                        }
+
+                        return null;
+                    }),
             ])
             ->recordActions([
                 ActionGroup::make([

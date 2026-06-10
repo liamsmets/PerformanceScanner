@@ -95,16 +95,12 @@ class AuditsTable
             return 'gray';
         }
 
-        if ($score <= 25) {
+        if ($score <= 49) {
             return 'danger';
         }
 
-        if ($score <= 50) {
+        if ($score <= 89) {
             return 'warning';
-        }
-
-        if ($score <= 75) {
-            return 'info';
         }
 
         return 'success';

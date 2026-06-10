@@ -34,4 +34,16 @@ class Website extends Model
     {
         return $this->hasMany(WebsitePage::class);
     }
+
+    public function scanLogs(): HasMany
+    {
+        return $this->hasMany(ScanLog::class);
+    }
+
+    public function latestMainScanLog(): HasOne
+    {
+        return $this->hasOne(ScanLog::class)
+            ->whereNull('website_page_id')
+            ->latestOfMany('started_at');
+    }
 }

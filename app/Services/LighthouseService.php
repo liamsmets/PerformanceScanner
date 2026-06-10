@@ -15,33 +15,48 @@ class LighthouseService
             $results[] = $this->runSingle($url);
         }
 
+        $performanceScore = $this->averageCategoryScore($results, 'performance');
+        $accessibilityScore = $this->averageCategoryScore($results, 'accessibility');
+        $bestPracticesScore = $this->averageCategoryScore($results, 'best-practices');
+        $seoScore = $this->averageCategoryScore($results, 'seo');
+
+        $lcp = $this->averageAuditMetric($results, 'largest-contentful-paint', 0);
+        $fcp = $this->averageAuditMetric($results, 'first-contentful-paint', 0);
+        $tbt = $this->averageAuditMetric($results, 'total-blocking-time', 0);
+        $cls = $this->averageAuditMetric($results, 'cumulative-layout-shift', 3);
+
         return [
             'url' => $url,
             'runs' => $runs,
-            'performance_score' => $this->averageCategoryScore($results, 'performance'),
-            'accessibility_score' => $this->averageCategoryScore($results, 'accessibility'),
-            'best_practices_score' => $this->averageCategoryScore($results, 'best-practices'),
-            'seo_score' => $this->averageCategoryScore($results, 'seo'),
-            'lcp_ms' => $this->averageAuditMetric($results, 'largest-contentful-paint', 0),
-            'fcp_ms' => $this->averageAuditMetric($results, 'first-contentful-paint', 0),
-            'tbt_ms' => $this->averageAuditMetric($results, 'total-blocking-time', 0),
-            'cls' => $this->averageAuditMetric($results, 'cumulative-layout-shift', 3),
+            'performance_score' => $performanceScore,
+            'accessibility_score' => $accessibilityScore,
+            'best_practices_score' => $bestPracticesScore,
+            'seo_score' => $seoScore,
+            'lcp_ms' => $lcp,
+            'fcp_ms' => $fcp,
+            'tbt_ms' => $tbt,
+            'cls' => $cls,
             'scanned_at' => now(),
+
+            // Belangrijk: deze volledige reports worden NIET opgeslagen in de database.
+            // Ze worden alleen tijdelijk gebruikt door AuditService om verbeterpunten uit te halen.
+            'reports' => $results,
+
             'summary_json' => [
                 'type' => 'average_of_multiple_runs',
                 'runs' => $runs,
                 'url' => $url,
                 'averages' => [
-                    'performance' => $this->averageCategoryScore($results, 'performance'),
-                    'accessibility' => $this->averageCategoryScore($results, 'accessibility'),
-                    'best-practices' => $this->averageCategoryScore($results, 'best-practices'),
-                    'seo' => $this->averageCategoryScore($results, 'seo'),
+                    'performance' => $performanceScore,
+                    'accessibility' => $accessibilityScore,
+                    'best-practices' => $bestPracticesScore,
+                    'seo' => $seoScore,
                 ],
                 'metrics' => [
-                    'lcp_ms' => $this->averageAuditMetric($results, 'largest-contentful-paint', 0),
-                    'fcp_ms' => $this->averageAuditMetric($results, 'first-contentful-paint', 0),
-                    'tbt_ms' => $this->averageAuditMetric($results, 'total-blocking-time', 0),
-                    'cls' => $this->averageAuditMetric($results, 'cumulative-layout-shift', 3),
+                    'lcp_ms' => $lcp,
+                    'fcp_ms' => $fcp,
+                    'tbt_ms' => $tbt,
+                    'cls' => $cls,
                 ],
             ],
         ];

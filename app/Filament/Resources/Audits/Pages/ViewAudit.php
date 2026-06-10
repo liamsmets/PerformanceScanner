@@ -3,18 +3,16 @@
 namespace App\Filament\Resources\Audits\Pages;
 
 use App\Filament\Resources\Audits\AuditResource;
-use App\Models\Audit;
 use Filament\Resources\Pages\ViewRecord;
-use Illuminate\Database\Eloquent\Model;
 
 class ViewAudit extends ViewRecord
 {
     protected static string $resource = AuditResource::class;
 
-    protected function resolveRecord(int|string $key): Model
+    protected string $view = 'filament.resources.audits.pages.view-audit';
+
+    public function getTitle(): string
     {
-        return Audit::query()
-            ->with('website')
-            ->findOrFail($key);
+        return 'Audit bekijken';
     }
 }

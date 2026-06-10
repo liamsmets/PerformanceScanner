@@ -1,4 +1,8 @@
-@props(['audit'])
+@props([
+    'audit',
+    'title' => 'Laatste scan',
+    'description' => 'De meest recente Lighthouse-meting voor deze historiek.',
+])
 
 @php
     $scoreStatus = function ($score) {
@@ -47,9 +51,9 @@
 <div class="ps-card">
     <div style="display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem;">
         <div>
-            <div class="ps-section-title">Laatste scan</div>
+            <div class="ps-section-title">{{ $title }}</div>
             <div class="ps-section-description">
-                De meest recente Lighthouse-meting voor deze historiek.
+                {{ $description }}
             </div>
         </div>
 
