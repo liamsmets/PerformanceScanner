@@ -287,7 +287,7 @@ class AuditService
         }
 
         $text = strip_tags($text);
-        $text = preg_replace('/\[(.*?)\]\((.*?)\)/', '$1', $text);
+        $text = preg_replace('/\[(.*?)]\((.*?)\)/', '$1', $text);
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5);
         $text = preg_replace('/\s+/', ' ', $text);
 

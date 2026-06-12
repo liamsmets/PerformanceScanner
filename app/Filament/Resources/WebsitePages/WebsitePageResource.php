@@ -52,15 +52,9 @@ class WebsitePageResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery()
+        return parent::getEloquentQuery()
             ->with('website:id,name,url')
             ->with('lastAudit')
             ->withCount('audits');
-
-        if (request()->filled('website_id')) {
-            $query->where('website_id', request()->integer('website_id'));
-        }
-
-        return $query;
     }
 }

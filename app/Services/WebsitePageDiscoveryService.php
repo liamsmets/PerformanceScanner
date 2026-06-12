@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class WebsitePageDiscoveryService
 {
-    private const MAX_PAGES = 100;
+    private const int MAX_PAGES = 100;
 
     public function discoverUrls(Website $website): array
     {
@@ -221,7 +221,7 @@ class WebsitePageDiscoveryService
             $sitemapUrl = $rootUrl . $sitemapUrl;
         }
 
-        if (! Str::startsWith($sitemapUrl, ['http://', 'https://'])) {
+        if (! Str::startsWith($sitemapUrl, ['https://'])) {
             $sitemapUrl = $rootUrl . '/' . ltrim($sitemapUrl, '/');
         }
 
@@ -321,7 +321,7 @@ class WebsitePageDiscoveryService
             return '';
         }
 
-        if (Str::startsWith($href, ['http://', 'https://'])) {
+        if (Str::startsWith($href, ['https://'])) {
             return $href;
         }
 
